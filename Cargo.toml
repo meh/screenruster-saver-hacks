@@ -1,0 +1,14 @@
+[package]
+name    = "screenruster-saver-hacks"
+version = "0.1.0"
+
+authors = ["meh. <meh@schizofreni.co>"]
+license = "GPL-3.0"
+
+description = "XScreenSaver and XLock hacks."
+repository  = "https://github.com/meh/screenruster-saver-hacks"
+keywords    = ["saver", "screenruster", "x11"]
+
+[dependencies]
+rand               = "0.3"
+screenruster-saver = "0.1"
