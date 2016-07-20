@@ -32,7 +32,7 @@ pub use config::Config;
 fn main() {
 	let channel = screen::init().unwrap();
 	let config  = if let Request::Config(config) = channel.recv().unwrap() {
-		config
+		Config::load(config).unwrap()
 	}
 	else {
 		panic!("protocol mismatch");
@@ -45,35 +45,16 @@ fn main() {
 		panic!("protocol mismatch");
 	};
 
-	let path  = config["path"].as_str().unwrap_or("/usr/libexec/xscreensaver");
-	let using = if let json::JsonValue::Array(ref array) = config["use"] {
-		array.iter()
-			.filter(|v| v.as_str().is_some())
-			.map(|v| v.as_str().unwrap())
-			.collect::<Vec<&str>>()
-	}
-	else {
-		panic!("`use` must be an array")
-	};
-
-	let hack     = using[rand::thread_rng().gen_range(0, using.len())];
-	let settings = if config[hack].is_object() {
-		config[hack].clone()
-	}
-	else {
-		json::JsonValue::new_object()
-	};
-
-	let mut command = Command::new(format!("{}/{}", path, hack));
+	let     hack    = config.using()[rand::thread_rng().gen_range(0, config.using().len())];
+	let mut command = Command::new(format!("{}/{}", config.path().to_str().unwrap(), hack));
 	command.env("DISPLAY", display);
 	command.arg("-window-id")
 	       .arg(format!("{}", window));
-	configure(&mut command, &settings);
+	configure(&mut command, config.get(hack));
 
 	channel.send(Response::Initialized).unwrap();
 
 	let mut child = None;
-
 	while let Ok(message) = channel.recv() {
 		match message {
 			Request::Start => {
@@ -97,20 +78,27 @@ fn main() {
 
 fn configure<'a>(command: &'a mut Command, config: &json::JsonValue) -> &'a mut Command {
 	for (key, value) in config.entries() {
-		match value {
-			&json::JsonValue::Boolean(true) => {
+		if key == "window-id" ||
+		   key == "window" ||
+		   key == "root"
+		{
+			continue;
+		}
+
+		match *value {
+			json::JsonValue::Boolean(true) => {
 				command.arg(format!("-{}", key));
 			}
 
-			&json::JsonValue::Boolean(false) => {
+			json::JsonValue::Boolean(false) => {
 				command.arg(format!("-no-{}", key));
 			}
 
-			&json::JsonValue::String(ref string) => {
+			json::JsonValue::String(ref string) => {
 				command.arg(format!("-{}", key)).arg(string);
 			}
 
-			&json::JsonValue::Number(number) => {
+			json::JsonValue::Number(number) => {
 				command.arg(format!("-{}", key)).arg(format!("{}", number));
 			}
 
