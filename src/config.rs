@@ -102,9 +102,14 @@ impl Config {
 					continue;
 				}
 
-				let mut name = program.split(' ').collect::<Vec<&str>>();
-				let mut args = name.split_off(1).into_iter().peekable();
-				let mut config = object!{};
+				let mut name   = program.split(' ').collect::<Vec<&str>>();
+				let mut args   = name.split_off(1).into_iter().peekable();
+				let mut config = if config[name[0]].is_null() {
+					object!{}
+				}
+				else {
+					config[name[0]].clone()
+				};
 
 				while let Some(mut item) = args.next() {
 					item = &item[1..];
@@ -125,7 +130,7 @@ impl Config {
 					}
 				}
 
-				if mode == Mode::Random || (mode == Mode::One && index + 1 == selected) {
+				if mode == Mode::Random || (mode == Mode::One && index == selected) {
 					using.push(name[0].into());
 					hacks.insert(name[0].into(), config);
 				}
