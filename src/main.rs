@@ -55,6 +55,7 @@ fn main() {
 	channel.send(Response::Initialized).unwrap();
 
 	let mut child = None;
+
 	while let Ok(message) = channel.recv() {
 		match message {
 			Request::Start => {
