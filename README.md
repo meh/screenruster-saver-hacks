@@ -1,5 +1,5 @@
-ScreenRuster support for XScreenSaver and XLock hacks
-=====================================================
+ScreenRuster support for XScreenSaver and XLock
+===============================================
 This saver provides support for using the plethora of existing screen savers
 from XScreenSaver and XLock as ScreenRuster savers.
 
