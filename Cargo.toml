@@ -11,4 +11,4 @@ keywords    = ["saver", "screenruster", "x11"]
 
 [dependencies]
 rand               = "0.3"
-screenruster-saver = "0.1"
+screenruster-saver = { version = "0.1", default-features = false }
