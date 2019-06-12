@@ -17,8 +17,6 @@
 
 #![feature(type_ascription)]
 
-#[macro_use]
-extern crate screenruster_saver as screen;
 use screen::{json, Request, Response};
 
 extern crate rand;
@@ -47,9 +45,14 @@ fn main() {
 
 	let     hack    = config.using()[rand::thread_rng().gen_range(0, config.using().len())];
 	let mut command = Command::new(format!("{}/{}", config.path().to_str().unwrap(), hack));
-	command.env("DISPLAY", display);
+
+	if let Some(display) = display {
+		command.env("DISPLAY", display);
+	}
+
 	command.arg("-window-id")
 	       .arg(format!("{}", window));
+
 	configure(&mut command, config.get(hack));
 
 	channel.send(Response::Initialized).unwrap();

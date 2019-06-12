@@ -19,9 +19,9 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
-use std::env;
 
-use screen::json;
+use dirs;
+use screen::{json::{self, object}, error};
 
 pub struct Config {
 	path: PathBuf,
@@ -39,8 +39,8 @@ pub enum Mode {
 
 impl Config {
 	pub fn load(config: json::JsonValue) -> io::Result<Config> {
-		let     home  = try!(env::home_dir().ok_or(io::Error::new(io::ErrorKind::NotFound, "home not found")));
-		let     file  = try!(File::open(home.join(".xscreensaver")));
+		let     home  = dirs::home_dir().ok_or(io::Error::new(io::ErrorKind::NotFound, "home not found"))?;
+		let     file  = File::open(home.join(".xscreensaver"))?;
 		let mut lines = BufReader::new(file).lines();
 
 		let mut using    = Vec::new();

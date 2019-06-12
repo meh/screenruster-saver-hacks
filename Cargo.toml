@@ -1,6 +1,7 @@
 [package]
 name    = "screenruster-saver-hacks"
 version = "0.1.1"
+edition = "2018"
 
 authors = ["meh. <meh@schizofreni.co>"]
 license = "GPL-3.0"
@@ -10,5 +11,6 @@ repository  = "https://github.com/meh/screenruster-saver-hacks"
 keywords    = ["saver", "screenruster", "x11"]
 
 [dependencies]
-rand               = "0.3"
-screenruster-saver = { version = "0.1", default-features = false }
+rand   = "0.6"
+dirs   = "2"
+screen = { package = "screenruster-saver", version = "0.2", path = "../saver" }
