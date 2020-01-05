@@ -11,6 +11,6 @@ repository  = "https://github.com/meh/screenruster-saver-hacks"
 keywords    = ["saver", "screenruster", "x11"]
 
 [dependencies]
-rand   = "0.6"
+rand   = "0.7"
 dirs   = "2"
 screen = { package = "screenruster-saver", version = "0.2", path = "../saver" }
